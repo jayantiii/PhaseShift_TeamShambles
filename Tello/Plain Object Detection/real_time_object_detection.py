@@ -28,6 +28,7 @@ telloFlying = False;
 
 # IP and port of Tello
 tello_address = ('192.168.10.1', 8889)
+#juggad var
 jay =0
 jaystart=0
 # Create a UDP connection that we'll send the command to
@@ -139,7 +140,7 @@ while True:
 				latt="12.94" + str(random.randint(0, 99))
 				longg="77.56" + str(random.randint(0, 99))
 				webb="https://www.latlong.net/c/?lat="+latt+"&long="+longg
-				memmeme=[detections, datetime.now(),latt,longg,webb ]
+				memmeme=[indexx,CLASSES[idx], datetime.now(),latt,longg,webb ]
 				#header = ['index', 'timestamp','detections',  'latuitude', 'longitude','view on map']
 				writer.writerow(memmeme )
 				
@@ -151,14 +152,14 @@ while True:
 			if(isExecuted == False):
 				isExecuted = True;
 				if jaystart ==0:
-					print("Step 1 Completed: bottle detected")
+					print("Step 1 Completed: drone starts")
 					print('in loop')
 					jaystart=jay
 
 				send('takeoff')
 				print("Don't panic, I'm gonna start rotating")
 			
-			if(jay>=2000 and isExecuted==True):
+			if(jay>=1300 and isExecuted==True):
 				#Turns until it finds a person
 				print("Threshold Landing")
 				send('land')
@@ -171,9 +172,10 @@ while True:
 				print("Step 2 Completed: person detected")
 				send('land')
 				print("Step 3 Completed: landed")
-				isDone = True;
+				#bug check
 			else:
 				send('cw 45')
+				isDone = True;
 			
 
 
@@ -187,7 +189,7 @@ while True:
 	cv2.imshow("Frame", frame)
 	key = cv2.waitKey(1) & 0xFF
 	
-	# if the `q` key was pressed, break from the loop
+	# if the `q` key was pressed, break from the loop - bug
 	if key == ord("q"):
 		break
 
