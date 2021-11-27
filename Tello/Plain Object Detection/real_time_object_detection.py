@@ -12,6 +12,15 @@ import imutils
 import time
 import cv2
 import socket
+import csv
+from datetime import datetime
+import random
+
+indexx = 1
+header = ['index', 'timestamp','detections',  'latuitude', 'longitude','view on map']
+with open('countries.csv', 'w', encoding='UTF8', newline='') as f:
+	writer = csv.writer(f)
+	writer.writerow(header)
 
 #************************************TELLO********************************************
 
@@ -19,7 +28,8 @@ telloFlying = False;
 
 # IP and port of Tello
 tello_address = ('192.168.10.1', 8889)
-
+jay =0
+jaystart=0
 # Create a UDP connection that we'll send the command to
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
@@ -85,6 +95,8 @@ isDone = False;
 
 # loop over the frames from the video stream
 while True:
+	jay+=1
+	print(jay)
 	# grab the frame from the threaded video stream and resize it
 	# to have a maximum width of 400 pixels
 	frame = vs.read()
@@ -120,22 +132,50 @@ while True:
 			label = "{}: {:.2f}%".format(CLASSES[idx],
 				confidence * 100)
 			
+			#this is for feeding the data & metadata
+			dataa=[indexx,]
+			with open('drone-data-feed.csv', 'w', encoding='UTF8', newline='') as f:
+				writer = csv.writer(f)
+				latt="12.94" + str(random.randint(0, 99))
+				longg="77.56" + str(random.randint(0, 99))
+				webb="https://www.latlong.net/c/?lat="+latt+"&long="+longg
+				memmeme=[detections, datetime.now(),latt,longg,webb ]
+				#header = ['index', 'timestamp','detections',  'latuitude', 'longitude','view on map']
+				writer.writerow(memmeme )
+				
+				print(memmeme)
+
+				
 			# Print the class of the found object
-			#print("Found " + CLASSES[idx]);
-			if(CLASSES[idx] == 'bottle' and isExecuted == False):
+			#print("Found " + CLASSES[idx]); CLASSES[idx] == 'bottle' and 
+			if(isExecuted == False):
 				isExecuted = True;
-				print("Step 1 Completed: bottle detected")
+				if jaystart ==0:
+					print("Step 1 Completed: bottle detected")
+					print('in loop')
+					jaystart=jay
+
 				send('takeoff')
 				print("Don't panic, I'm gonna start rotating")
 			
-			if(CLASSES[idx] == 'person' and isExecuted==True and isDone==False):
+			if(jay>=2000 and isExecuted==True):
+				#Turns until it finds a person
+				print("Threshold Landing")
+				send('land')
+				print("Step 3 Completed: landed")
+				isDone = True;
+
+
+			if(jay>=300 and CLASSES[idx] == 'person' and isExecuted==True and isDone==False):
 				#Turns until it finds a person
 				print("Step 2 Completed: person detected")
 				send('land')
 				print("Step 3 Completed: landed")
+				isDone = True;
 			else:
 				send('cw 45')
-				isDone = True;
+			
+
 
 			cv2.rectangle(frame, (startX, startY), (endX, endY),
 				COLORS[idx], 2)
@@ -146,7 +186,7 @@ while True:
 	# show the output frame
 	cv2.imshow("Frame", frame)
 	key = cv2.waitKey(1) & 0xFF
-
+	
 	# if the `q` key was pressed, break from the loop
 	if key == ord("q"):
 		break
