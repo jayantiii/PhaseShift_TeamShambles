@@ -1,6 +1,5 @@
 # IRIS Tello Demo
 
-Part of Project Vanguard's Fall 2020 Semester Projects, IRIS focused on providing a scalable machine learning model for object detection, that would serve as a demo for the features implemented on the team's main line of drones.
 ### Venv Installation
 
 To download all the dependencies related to this project, begin by creating a Virtual Environment:
@@ -39,11 +38,6 @@ send('flip r')
 
 <img src="./IRIS%20Tello%20Demo%200c5e455c65a8456da11ddbd4c57b1610/415yjHOgXVL.jpg" alt="alt text" width="285"/>
 
-### Downloading the Code (Using Visual Studio Code)
-
-Click source control or Ctrl+Shift+P on Linux and Windows, Command+Shift+P on macOS, then hit clone and then paste the following https clone link:
-
-[https://github.com/ProjectVanguard/TelloObjectDetection](https://github.com/ProjectVanguard/TelloObjectDetection)
 
 # Demo Obstacle Course
 
